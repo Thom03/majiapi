@@ -2,14 +2,12 @@ version: "3"
 
 services:
     app:
-        build:
-            context: .
+        build: ./app
         ports:
             - "8000:8000"
         volumes:
-            - ./project:/project
-        command: >
-          sh -c "python manage.py runserver 0.0.0.0:8000"
+            - ./app:/usr/src/app
+        command: python manage.py runserver 0.0.0.0:8000
         env_file:
             -   ./.env.dev
     db:
