@@ -1,4 +1,4 @@
-# Coolpam-app-api
+# Maji-app-api
 Coolpam Water Project API source code\
 Clone the project using the following command \
 `git clone -----`
