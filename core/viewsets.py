@@ -19,7 +19,11 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ]
+
+    def get_queryset(self):
+        current_user = self.queryset.filter(owner=self.request.user)
+        return current_user
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
