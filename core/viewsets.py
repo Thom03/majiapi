@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, generics
 from core.models import Customer
@@ -18,12 +19,17 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated, ]
+
+    def get_queryset(self):
+        current_user = self.queryset.filter(owner=self.request.user)
+        return current_user
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
 
 class UserViewset(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [IsAdminUser]
     queryset = User.objects.all()
     serializer_class = UserSerializer
