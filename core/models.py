@@ -23,3 +23,37 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.first_name
+
+
+class UnitCharge(models.Model):
+    user = models.OneToOneField('auth.User', related_name='unitcharge', on_delete=models.CASCADE, primary_key=True)
+    created = models.DateTimeField(auto_now=True)
+    charge = models.FloatField(max_length=100, blank=True)
+
+    class Meta:
+        verbose_name = _("UnitCharge")
+        verbose_name_plural = _("UnitCharges")
+
+
+class MeterReading(models.Model):
+    customer = models.ForeignKey('core.Customer', related_name='meterreading', on_delete=models.CASCADE)
+    meter_reading = models.FloatField(max_length=14, blank=True)
+    created = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created', ]
+        get_latest_by = ("-created",)
+
+    @property
+    def previous_reading(self):
+        previous_reading = MeterReading.objects.latest('-created').meter_reading
+        return previous_reading
+
+    @property
+    def consumption(self):
+        # if self.meter_reading is not None:
+        # previous_reading = MeterReading.objects.latest().meter_reading
+        consumption = self.meter_reading - self.previous_reading
+        return consumption
+
+

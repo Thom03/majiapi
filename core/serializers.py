@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Customer
+from .models import Customer, UnitCharge, MeterReading
 from django.contrib.auth.models import User
 
 
@@ -16,3 +16,15 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = ['id', 'username', 'customers']
+
+
+class UnitChargeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UnitCharge
+        fields = ['user', 'charge', ]
+
+
+class MeterReadingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MeterReading
+        fields = ["customer", "previous_reading", "meter_reading", "consumption"]
