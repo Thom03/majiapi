@@ -3,8 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, generics
-from core.models import Customer
-from core.serializers import CustomerSerializer, UserSerializer
+from core.models import Customer, UnitCharge, MeterReading
+from core.serializers import CustomerSerializer, UserSerializer, UnitChargeSerializer, MeterReadingSerializer
 from core.permissions import IsOwnerOrReadOnly
 from django.contrib.auth.models import User
 
@@ -33,3 +33,19 @@ class UserViewset(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAdminUser]
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class UnitchargeViewset(viewsets.ModelViewSet):
+    queryset = UnitCharge.objects.all()
+    serializer_class = UnitChargeSerializer
+
+
+class MeterReadingViewset(viewsets.ModelViewSet):
+    queryset = MeterReading.objects.all()
+    serializer_class = MeterReadingSerializer
+
+    def perform_create(self, serializer):
+        previous_reading = serializer.validated_data['previous_reading']
+        current_reading = serializer.validated_data['current_reading']
+        consumption = current_reading - previous_reading
+        serializer.save(consumption=consumption)
