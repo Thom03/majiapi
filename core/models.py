@@ -42,12 +42,14 @@ class MeterReading(models.Model):
 
     class Meta:
         ordering = ['-created', ]
-        get_latest_by = ("-created",)
+        get_latest_by = ("created",)
 
     @property
     def previous_reading(self):
-        previous_reading = MeterReading.objects.latest('-created').meter_reading
-        return previous_reading
+        existing = MeterReading.objects.filter(customer=self.customer, created__lt=self.created).first()
+        if existing:
+            return existing.meter_reading
+        return 0
 
     @property
     def consumption(self):

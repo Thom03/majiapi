@@ -42,10 +42,8 @@ class UnitchargeViewset(viewsets.ModelViewSet):
 
 class MeterReadingViewset(viewsets.ModelViewSet):
     queryset = MeterReading.objects.all()
+    permission_classes = [IsAuthenticated, ]
     serializer_class = MeterReadingSerializer
 
-    def perform_create(self, serializer):
-        previous_reading = serializer.validated_data['previous_reading']
-        current_reading = serializer.validated_data['current_reading']
-        consumption = current_reading - previous_reading
-        serializer.save(consumption=consumption)
+
+
