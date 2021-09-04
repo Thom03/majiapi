@@ -154,8 +154,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #REST_USE_JWT = True
 
 CORS_ORIGIN_WHITELIST = [
-    "https://example.com",
     "http://coolpam.eastus.cloudapp.azure.com",
+    "https://example.com",
     "http://52.234.209.82",
     "http://127.0.0.1:9000"
+]
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
 ]
