@@ -1,5 +1,5 @@
 from django.contrib import admin
-from core.models import Customer, UnitCharge, MeterReading
+from core.models import Customer, UnitCharge, MeterReading, Billing, PumpedUnits
 
 
 # Register your models here.
@@ -44,5 +44,35 @@ class MeterReadingAdmin(admin.ModelAdmin):
         "created",
         "customer",
     )
+
+
+@admin.register(Billing)
+class BillingAdmin(admin.ModelAdmin):
+    list_display = (
+        "customer",
+        "status",
+        "created",
+    )
+
+    list_filter = (
+        "customer",
+       
+    )
+
+@admin.register(PumpedUnits)
+class PumpedUnitsAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "meter_reading",
+        "yesterday_reading",
+        "units_pumped",
+        "created",
+    )
+
+    list_filter = (
+        "created",
+        "user",
+    )
+
 
 # admin.site.register(Customer)
