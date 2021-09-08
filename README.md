@@ -14,6 +14,6 @@ Clone the project using the following command \
 `docker-compose exec app django-admin startapp customers`
 
 
-
+<!-- TODO: Proper documentation of endpoints -->
 
   

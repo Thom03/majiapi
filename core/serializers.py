@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Customer, UnitCharge, MeterReading
+from .models import Customer, UnitCharge, MeterReading, PumpedUnits
 from django.contrib.auth.models import User
 
 
@@ -23,7 +23,7 @@ class UnitChargeSerializer(serializers.ModelSerializer):
         model = UnitCharge
         fields = ['user', 'charge', ]
 
-
+# TODO: Refactoring this code to run as an app
 class MeterReadingSerializer(serializers.ModelSerializer):
     class Meta:
         model = MeterReading
@@ -40,3 +40,22 @@ class MeterReadingSerializer(serializers.ModelSerializer):
                     f"Current meter reading cannot be less than {latest_customer_reading.meter_reading}."
                 )
         return attrs
+
+# TODO: Refactoring this code to run as an app
+class PumpedUnitsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PumpedUnits
+        fields = ["user", "yesterday_reading", "meter_reading", "units_pumped"]
+        read_only_fields = ("yesterday_reading",)
+
+    def validate(self, attrs):
+        user = attrs.get("auth.User")
+        user = self.context['view'].request.user
+        latest_pumped_reading = PumpedUnits.objects.filter(user=user).first()
+        if latest_pumped_reading:
+            if not attrs["meter_reading"] > latest_pumped_reading.meter_reading:
+                raise serializers.ValidationError(
+                    f"Current meter reading cannot be less than {latest_pumped_reading.meter_reading}."
+                )
+        return attrs
+

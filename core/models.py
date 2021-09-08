@@ -57,5 +57,48 @@ class MeterReading(models.Model):
         # previous_reading = MeterReading.objects.latest().meter_reading
         consumption = self.meter_reading - self.previous_reading
         return consumption
+# TODO: Calculation of amount
+class Billing(models.Model):
+    STATUS_PENDING, STATUS_PAID = ("PENDING", "PAID", )
+    customer = models.ForeignKey('core.Customer', related_name='billing', on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=10,
+        choices=(
+            (STATUS_PENDING, STATUS_PENDING),
+            (STATUS_PAID, STATUS_PAID)
+        ),
+        default=STATUS_PENDING
+    )
+    created = models.DateTimeField(auto_now=True)
+
+    # @property
+    # def amount(self):
+    #     amount = UnitCharge.charge. * MeterReading.objects.latest().consumption
+    #     return amount
+
+class PumpedUnits(models.Model):
+    user = models.ForeignKey('auth.User', related_name='pumpedunits', on_delete=models.CASCADE)
+    meter_reading = models.FloatField(max_length=14, blank=True)
+    created = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created', ]
+        get_latest_by = ("created",)
+
+    @property
+    def yesterday_reading(self):
+        existing = PumpedUnits.objects.filter(user=self.user, created__lt=self.created).first()
+        if existing:
+            return existing.meter_reading
+        return 0
+
+    @property
+    def units_pumped(self):
+        # if self.meter_reading is not None:
+        # previous_reading = MeterReading.objects.latest().meter_reading
+        units_pumped = self.meter_reading - self.yesterday_reading
+        return units_pumped
+
+   
 
 

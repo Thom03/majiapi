@@ -3,8 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, generics
-from core.models import Customer, UnitCharge, MeterReading
-from core.serializers import CustomerSerializer, UserSerializer, UnitChargeSerializer, MeterReadingSerializer
+from core.models import Customer, UnitCharge, MeterReading, PumpedUnits
+from core.serializers import CustomerSerializer, UserSerializer, UnitChargeSerializer, MeterReadingSerializer, PumpedUnitsSerializer
 from core.permissions import IsOwnerOrReadOnly
 from django.contrib.auth.models import User
 
@@ -44,6 +44,11 @@ class MeterReadingViewset(viewsets.ModelViewSet):
     queryset = MeterReading.objects.all()
     permission_classes = [IsAuthenticated, ]
     serializer_class = MeterReadingSerializer
+
+class PumpedUnitViewset(viewsets.ModelViewSet):
+    queryset = PumpedUnits.objects.all()
+    permission_classes = [IsAuthenticated, ]
+    serializer_class = PumpedUnitsSerializer
 
 
 
